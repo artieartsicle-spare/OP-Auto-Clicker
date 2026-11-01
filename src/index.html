@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>OP Auto Clicker</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="window">
+
+    <!-- Theme stripes (click one to recolor the window) -->
+    <div class="stripes" id="stripes">
+      <button class="stripe" data-theme="purple" aria-label="Purple theme"></button>
+      <button class="stripe" data-theme="red" aria-label="Red theme"></button>
+      <button class="stripe" data-theme="orange" aria-label="Orange theme"></button>
+      <button class="stripe" data-theme="yellow" aria-label="Yellow theme"></button>
+      <button class="stripe" data-theme="green" aria-label="Green theme"></button>
+      <button class="stripe" data-theme="black" aria-label="Black theme"></button>
+      <button class="stripe" data-theme="white" aria-label="White theme"></button>
+    </div>
+
+    <header class="titlebar" data-tauri-drag-region>
+      <div class="lights">
+        <button class="light close" id="btn-close" aria-label="Close"></button>
+        <button class="light min" id="btn-min" aria-label="Minimize"></button>
+      </div>
+    </header>
+
+    <main>
+      <p class="line">
+        Every
+        <input class="field" id="interval" value="50" inputmode="numeric" aria-label="Interval" />
+        <button class="pick" id="unit-pick" aria-haspopup="listbox" aria-expanded="false"><span class="pick-text"></span></button>,
+      </p>
+      <p class="line">
+        press '
+        <button class="pick" id="button-pick" aria-haspopup="listbox" aria-expanded="false"><span class="pick-text"></span></button>'
+        <input class="field" id="clicks" value="1" inputmode="numeric" aria-label="Clicks per press" />
+        <span id="clicks-word">time</span>,
+      </p>
+      <p class="line">
+        repeat
+        <input class="field" id="repeat" value="100" inputmode="numeric" aria-label="Repeat count" />
+        <span id="repeat-word">times</span>.
+      </p>
+      <p class="line">
+        Wait
+        <input class="field" id="delay" value="1" inputmode="numeric" aria-label="Start delay" />
+        <span id="delay-word">second</span> before starting.
+      </p>
+
+      <div class="actions">
+        <div class="action">
+          <button class="go" id="start">START</button>
+          <button class="hint" id="hk-start" title="Click to change the hotkey"></button>
+        </div>
+        <div class="action">
+          <button class="go" id="stop" disabled>STOP</button>
+          <button class="hint" id="hk-stop" title="Click to change the hotkey"></button>
+        </div>
+      </div>
+    </main>
+
+    <footer class="info">
+      <div class="cols">
+        <div class="col">
+          <span class="lbl">NEXT PRESS AT</span>
+          <span class="val" id="next-at">—</span>
+        </div>
+        <div class="col">
+          <span class="lbl">FINAL PRESS AT</span>
+          <span class="val" id="final-at">—</span>
+        </div>
+      </div>
+      <span class="credit" id="credit">made with Tauri</span>
+    </footer>
+  </div>
+  <script src="main.js"></script>
+</body>
+</html>

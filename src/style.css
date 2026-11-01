@@ -1,0 +1,269 @@
+/* SF Pro: matched by installed font name (full or PostScript name); optional files in src/fonts/ */
+@font-face { font-family: "SFPro"; font-weight: 100 900;
+  src: local("SF Pro"), local("SF-Pro"), url("fonts/SF-Pro.ttf") format("truetype"); }
+@font-face { font-family: "SFPro"; font-weight: 100;
+  src: local("SF Pro Display Thin"), local("SFProDisplay-Thin"), local("SF Pro Display Thin Regular"),
+       url("fonts/SF-Pro-Display-Thin.otf") format("opentype"); }
+@font-face { font-family: "SFPro"; font-weight: 200;
+  src: local("SF Pro Display Ultralight"), local("SFProDisplay-Ultralight"),
+       url("fonts/SF-Pro-Display-Ultralight.otf") format("opentype"); }
+@font-face { font-family: "SFPro"; font-weight: 300;
+  src: local("SF Pro Display Light"), local("SFProDisplay-Light"),
+       url("fonts/SF-Pro-Display-Light.otf") format("opentype"); }
+@font-face { font-family: "SFPro"; font-weight: 400;
+  src: local("SF Pro Text Regular"), local("SFProText-Regular"), local("SF Pro Display Regular"), local("SFProDisplay-Regular"),
+       url("fonts/SF-Pro-Text-Regular.otf") format("opentype"); }
+@font-face { font-family: "SFPro"; font-weight: 500;
+  src: local("SF Pro Text Medium"), local("SFProText-Medium"), local("SF Pro Display Medium"), local("SFProDisplay-Medium"),
+       url("fonts/SF-Pro-Text-Medium.otf") format("opentype"); }
+
+:root {
+  /* theme (overwritten by main.js when a stripe is clicked) */
+  --bg: #0a7aff;
+  --deep: #064e9e;
+  --fg: #ffffff;
+  --btn-fg: #ffffff;
+  --dim: #0c63c9;
+  --info: #2fb4f0;
+  --panel: rgba(0, 0, 0, 0.55);
+
+  --sentence-weight: 100;   /* 100 = Thin, 200 = Ultralight, 300 = Light */
+  --font: "SFPro", "SF Pro Display", "SF Pro Text", "SF Pro", -apple-system, BlinkMacSystemFont,
+          "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  background: var(--bg);
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: default;
+}
+
+body {
+  font-family: var(--font);
+  color: var(--fg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+button { font-family: inherit; }
+
+/* The window fills the native window. Rounded corners + shadow are drawn by Windows 11 itself. */
+.window {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  overflow: hidden;
+  transition: background 0.2s;
+}
+
+/* ---------- Stripes ---------- */
+.stripes {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 182px;
+  display: flex;
+  z-index: 1;
+}
+.stripe {
+  flex: 1;
+  border: 0;
+  cursor: default;
+  outline: none;
+  transition: filter 0.12s;
+}
+.stripe:hover { filter: brightness(1.12); }
+.stripe:focus-visible { box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.8); }
+.stripe[data-theme="purple"] { background: #5e5ce6; }
+.stripe[data-theme="red"]    { background: #ff453a; }
+.stripe[data-theme="orange"] { background: #ff9f0a; }
+.stripe[data-theme="yellow"] { background: #ffd60a; }
+.stripe[data-theme="green"]  { background: #30d158; }
+.stripe[data-theme="black"]  { background: #1c1c1e; }
+.stripe[data-theme="white"]  { background: #f2f2f7; }
+
+/* ---------- Title bar ---------- */
+.titlebar {
+  position: relative;
+  z-index: 3;
+  width: calc(100% - 182px);
+  height: 40px;
+  flex: none;
+  display: flex;
+  align-items: center;
+}
+.lights { display: flex; gap: 8px; padding-left: 14px; }
+.light {
+  width: 13px;
+  height: 13px;
+  padding: 0;
+  border: 0;
+  background: transparent center / 100% 100% no-repeat;
+  cursor: default;
+  outline: none;
+}
+.light.close { background-image: url("assets/close.svg"); }
+.light.min   { background-image: url("assets/min.svg"); }
+
+/* glyphs appear when hovering the group, like macOS */
+.lights:hover .close { background-image: url("assets/close-hover.svg"); }
+.lights:hover .min   { background-image: url("assets/min-hover.svg"); }
+.lights .close:active { background-image: url("assets/close-press.svg"); }
+.lights .min:active   { background-image: url("assets/min-press.svg"); }
+
+/* inactive window: grey lights */
+body.inactive .light,
+body.inactive .lights:hover .light { background-image: url("assets/inactive.svg"); }
+
+/* ---------- Sentence ---------- */
+main {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  padding: 6px 36px 0;
+  min-height: 0;
+  pointer-events: none;   /* let stripes underneath receive clicks */
+}
+main .field, main .pick, main .go, main .hint { pointer-events: auto; }
+
+.line {
+  font-size: 28px;
+  font-weight: var(--sentence-weight);
+  line-height: 55px;
+  white-space: nowrap;
+}
+
+.field {
+  display: inline-block;
+  min-width: 1.1em;
+  padding: 0 4px;
+  margin: 0 2px;
+  font: inherit;
+  line-height: 1.15;
+  color: inherit;
+  text-align: center;
+  background: transparent;
+  border: 0;
+  border-bottom: 3px solid var(--deep);
+  border-radius: 0;
+  outline: none;
+  vertical-align: baseline;
+  caret-color: var(--fg);
+  cursor: text;
+  transition: border-color 0.12s;
+}
+.field:focus { border-bottom-color: var(--fg); }
+.field:disabled { opacity: 0.6; cursor: default; }
+
+.pick {
+  display: inline-block;
+  padding: 0 4px;
+  margin: 0 2px;
+  font: inherit;
+  line-height: 1.15;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  border-bottom: 3px solid var(--deep);
+  border-radius: 0;
+  outline: none;
+  cursor: default;
+  transition: border-color 0.12s;
+}
+.pick:focus-visible, .pick[aria-expanded="true"] { border-bottom-color: var(--fg); }
+.pick.locked { opacity: 0.6; pointer-events: none; }
+
+/* macOS-style pop-up menu */
+.menu {
+  position: absolute;
+  z-index: 20;
+  padding: 5px;
+  font-family: var(--font);
+  font-size: 15px;
+  font-weight: 400;
+  color: #f2f2f7;
+  background: rgba(44, 44, 46, 0.97);
+  border: 0.5px solid rgba(255, 255, 255, 0.18);
+  border-radius: 9px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+}
+.menu-item {
+  display: flex;
+  align-items: center;
+  height: 26px;
+  padding: 0 16px 0 2px;
+  border-radius: 5px;
+  white-space: nowrap;
+}
+.menu-item .tick { width: 20px; text-align: center; font-size: 12px; visibility: hidden; }
+.menu-item.selected .tick { visibility: visible; }
+.menu-item:hover, .menu-item.active { background: #0a60ff; color: #fff; }
+
+/* ---------- Buttons ---------- */
+.actions { display: flex; gap: 28px; margin-top: 8px; }
+.action { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+
+.go {
+  width: 128px;
+  height: 44px;
+  font-size: 22px;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  color: var(--btn-fg);
+  background: var(--deep);
+  border: 0;
+  border-radius: 9px;
+  cursor: default;
+  outline: none;
+  transition: background 0.12s, color 0.12s;
+}
+.go:active:not(:disabled) { filter: brightness(1.2); }
+.go:focus-visible { box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.55); }
+.go:disabled { color: var(--dim); background: transparent; }
+
+.hint {
+  padding: 1px 6px;
+  font-size: 11px;
+  letter-spacing: 0.3px;
+  color: var(--dim);
+  background: transparent;
+  border: 0;
+  border-radius: 4px;
+  outline: none;
+  cursor: default;
+}
+.hint:hover { background: rgba(0, 0, 0, 0.12); }
+.hint:focus-visible { box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.55); }
+.hint.recording { color: var(--fg); background: rgba(0, 0, 0, 0.25); }
+
+body.running #start { background: transparent; color: var(--dim); }
+body.running #stop  { background: var(--deep); color: var(--btn-fg); }
+
+/* ---------- Info panel ---------- */
+.info {
+  position: relative;
+  z-index: 2;
+  flex: none;
+  height: 90px;
+  background: var(--panel);
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+}
+.cols { display: flex; width: 100%; }
+.col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; margin-top: -10px; }
+.lbl { font-size: 11px; letter-spacing: 0.4px; color: var(--info); opacity: 1; }
+.val { font-size: 15px; font-weight: 500; font-variant-numeric: tabular-nums; color: var(--info); }
+.credit { position: absolute; bottom: 8px; left: 0; right: 0; text-align: center; font-size: 10px; color: var(--info); opacity: 0.9; }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
